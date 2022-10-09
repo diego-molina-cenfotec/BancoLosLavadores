@@ -1,5 +1,6 @@
 package molina.diego.ui;
 import molina.diego.bl.Cliente;
+import molina.diego.bl.CuentaCorriente;
 import java.io.*;
 import java.util.ArrayList;
 import java.time.*;
@@ -9,7 +10,9 @@ public class UI {
     static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
     static PrintStream out = System.out;
     static ArrayList clientes = new ArrayList<>();
+    static ArrayList consecuticoCtas = new ArrayList<Integer>();
     static Cliente cliente;
+    static CuentaCorriente cuenta = new CuentaCorriente();
 
     // metodos utilitarios mostrar y leer
     static String leerTexto()throws IOException {
@@ -84,8 +87,28 @@ public class UI {
             System.out.println(i + " => " + clientes.get(i));
         }
     }
-    private static void abrirCuenta() {
-
+    private static void abrirCuenta() throws IOException {
+        mostrarTexto("indique el numero de id del cliente al que se le va a crear una cuenta");
+        String idCliente = leerTexto();
+        mostrarTexto("ingrese el monto sin comas ni puntos para el deposito inicial. el Monto => a 50000");
+        int deposito = Integer.parseInt(leerTexto());
+        int numeroCta = asignarNumeroCta();
     }
+
+    private static int asignarNumeroCta() {
+        int nuevo =0;
+        if (consecuticoCtas.get(0) == null) {
+            consecuticoCtas.set(0, 1000000);
+            nuevo = (int) consecuticoCtas.get(0);
+        }
+        for (int i = 1; i < consecuticoCtas.size(); i++) {
+            if (consecuticoCtas.get(i) == null) {
+                int indiceAnterior = i - 1;
+                nuevo = (int) consecuticoCtas.get(indiceAnterior) + 1;
+                mostrarTexto("el nuevo consecutivo es = " + nuevo);
+            }
+        }
+        return nuevo;
+    } // fin de asignarNumeroCta
 
 } // fin de clase UI
