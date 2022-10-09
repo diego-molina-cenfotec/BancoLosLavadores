@@ -1,13 +1,12 @@
 package molina.diego.bl;
-
-import java.time.LocalDate;
+import java.time.*;
 import java.util.ArrayList;
 
 public class Cliente {
     private String id;
     private String nombreCompleto;
     private LocalDate fechaNacimiento;
-    private LocalDate edad;
+    private Period edad;
     private String direccion;
     private CuentaCorriente cuenta;
     private ArrayList cuentas = new ArrayList<CuentaCorriente>();
@@ -21,6 +20,7 @@ public class Cliente {
         this.nombreCompleto = nombreCompleto;
         this.fechaNacimiento = fechaNacimiento;
         this.direccion = direccion;
+        this.edad = setEdad(fechaNacimiento);
     }
 
     public String getId() {
@@ -47,12 +47,15 @@ public class Cliente {
         this.fechaNacimiento = fechaNacimiento;
     }
 
-    public LocalDate getEdad() {
+    public Period getEdad() {
         return edad;
     }
 
-    public void setEdad(LocalDate edad) {
-        this.edad = edad;
+    // No se si es valido, pero modifique la edad. no se si deberia hacer una funcion nueva.
+    public Period setEdad(LocalDate fechaNacimiento) {
+        LocalDate fechaActual = LocalDate.now();
+        this.edad = Period.between(fechaActual, fechaNacimiento);
+        return edad;
     }
 
     public String getDireccion() {
@@ -85,7 +88,7 @@ public class Cliente {
                 "id='" + id + '\'' +
                 ", nombreCompleto='" + nombreCompleto + '\'' +
                 ", fechaNacimiento=" + fechaNacimiento +
-                ", edad=" + edad +
+                ", edad=" + edad.getYears() +
                 ", direccion='" + direccion + '\'' +
                 '}';
     }

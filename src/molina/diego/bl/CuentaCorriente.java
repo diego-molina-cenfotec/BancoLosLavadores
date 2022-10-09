@@ -2,12 +2,13 @@ package molina.diego.bl;
 public class CuentaCorriente {
     private String numeroCuenta;
     private int saldo;
+    private int deposito;
 
     public CuentaCorriente() {
     }
-    public CuentaCorriente(String numeroCuenta, int saldo) {
+    public CuentaCorriente(String numeroCuenta, int deposito) {
         this.numeroCuenta = numeroCuenta;
-        this.saldo = saldo;
+        this.saldo = deposito;
     }
     public String getNumeroCuenta() {
         return numeroCuenta;
