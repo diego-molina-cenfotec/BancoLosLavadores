@@ -5,22 +5,66 @@ import java.io.*;
 import java.util.ArrayList;
 import java.time.*;
 
+/**
+ * The type Ui.
+ */
 public class UI {
-    // variables globales
+    /**
+     * The constant in.
+     */
+// variables globales
     static BufferedReader in = new BufferedReader(new InputStreamReader(System.in));
+    /**
+     * The Out.
+     */
     static PrintStream out = System.out;
-    static ArrayList clientes = new ArrayList<>();
-    static ArrayList consecuticoCtas = new ArrayList<Integer>();
+    /**
+     * The Clientes.
+     */
+    static ArrayList<Cliente> clientes = new ArrayList<>();
+    /**
+     * The Consecutivo ctas.
+     */
+    static ArrayList<Integer> consecutivoCtas = new ArrayList<Integer>();
+    /**
+     * The Cuentas.
+     */
+    static ArrayList<CuentaCorriente> cuentas = new ArrayList<>();
+    /**
+     * The Cliente.
+     */
     static Cliente cliente;
-    static CuentaCorriente cuenta = new CuentaCorriente();
+    /**
+     * The Tmp cuenta.
+     */
+    static CuentaCorriente tmpCuenta;
 
-    // metodos utilitarios mostrar y leer
+    /**
+     * Leer texto string.
+     *
+     * @return the string
+     * @throws IOException the io exception
+     */
+// metodos utilitarios mostrar y leer
     static String leerTexto()throws IOException {
         return in.readLine();
     }
+
+    /**
+     * Mostrar texto.
+     *
+     * @param msj the msj
+     */
     static void mostrarTexto(String msj){
         out.println(msj);
     }
+
+    /**
+     * The entry point of application.
+     *
+     * @param args the input arguments
+     * @throws IOException the io exception
+     */
     public static void main(String[] args) throws IOException {
         mostrarTexto("*** Bienvenido al sistema Banco Los Lavadores");
         int opcion = -1;
@@ -36,6 +80,8 @@ public class UI {
         mostrarTexto("1. Registrar Cliente");
         mostrarTexto("2. Listar Clientes");
         mostrarTexto("3. Abrir Cuenta Corriente");
+        mostrarTexto("4. Asignar número Cuenta");
+        mostrarTexto("5. buscar Cliente");
         mostrarTexto("0. Salir del programa");
     }
     private static int seleccionarOpcion() throws IOException {
@@ -55,6 +101,14 @@ public class UI {
                 break;
             case 3:
                 abrirCuenta();
+                break;
+            case 4:
+                // casos para probar funciones
+                asignarNumeroCta();
+                break;
+            case 5:
+                // casos para probar funciones
+                buscarCliente();
                 break;
             default:
                 mostrarTexto("Opcion invalida por favor confirme la opcion deseada");
@@ -84,29 +138,48 @@ public class UI {
         mostrarTexto("los clientes actuales son");
         mostrarTexto("Cliente #");
         for (int i = 0; i <clientes.size() ; i++) {
-            System.out.println(i + " => " + clientes.get(i));
+            System.out.println((i+1) + " => " + clientes.get(i));
+            System.out.println(clientes);
         }
     }
-    private static void abrirCuenta() throws IOException {
+    private static Cliente buscarCliente() throws IOException {
         mostrarTexto("indique el numero de id del cliente al que se le va a crear una cuenta");
         String idCliente = leerTexto();
+        mostrarTexto("el cliente buscado es =  " + idCliente);
+        for (int i = 0; i <clientes.size() ; i++) {
+            System.out.println(clientes.get(i).getNombreCompleto());
+            if (idCliente.equals(clientes.get(i).getId())){
+                mostrarTexto("cliente encontrado");
+                cliente = clientes.get(i);
+                mostrarTexto(cliente.toString());
+            }
+        }// fin del for
+        return cliente;
+    }// fin de buscarCliente
+
+        private static void abrirCuenta() throws IOException {
+        cliente = buscarCliente();
+        String duenio = cliente.getNombreCompleto();
+        int numeroCta = asignarNumeroCta();
         mostrarTexto("ingrese el monto sin comas ni puntos para el deposito inicial. el Monto => a 50000");
         int deposito = Integer.parseInt(leerTexto());
-        int numeroCta = asignarNumeroCta();
-    }
+        tmpCuenta = new CuentaCorriente(numeroCta, deposito, duenio);
+        cuentas.add(tmpCuenta);
+        mostrarTexto("se creo la siguiente cuenta= "+cuentas);
+        cliente.setCuenta(tmpCuenta);
+    }// fin de abrir cuenta
 
-    private static int asignarNumeroCta() {
+    private static int asignarNumeroCta() throws IOException{
         int nuevo =0;
-        if (consecuticoCtas.get(0) == null) {
-            consecuticoCtas.set(0, 1000000);
-            nuevo = (int) consecuticoCtas.get(0);
-        }
-        for (int i = 1; i < consecuticoCtas.size(); i++) {
-            if (consecuticoCtas.get(i) == null) {
-                int indiceAnterior = i - 1;
-                nuevo = (int) consecuticoCtas.get(indiceAnterior) + 1;
-                mostrarTexto("el nuevo consecutivo es = " + nuevo);
-            }
+        if (consecutivoCtas == null || consecutivoCtas.size() == 0) {
+            consecutivoCtas.add(1000000);
+            nuevo = consecutivoCtas.get(0);
+            System.out.println(nuevo);
+        }else {
+            int conseAnterior = consecutivoCtas.get(consecutivoCtas.size()-1);
+            consecutivoCtas.add(conseAnterior+1);
+            nuevo = consecutivoCtas.get(consecutivoCtas.size()-1);
+            System.out.println(nuevo);
         }
         return nuevo;
     } // fin de asignarNumeroCta
